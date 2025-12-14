@@ -133,7 +133,40 @@ User → Browser → Flask App → PostgreSQL (query statistics)
 
 ## Quick Start
 
-### Run with Docker Compose
+### Option 1: Run with Kubernetes (Minikube)
+
+```bash
+# Start Minikube
+minikube start
+
+# Navigate to k8s directory
+cd k8s
+
+# Make deploy script executable
+chmod +x deploy.sh
+
+# Deploy all services
+./deploy.sh
+
+# Check deployment status
+kubectl get pods -n todo-app
+
+# Get the application URL
+minikube service todo-app-service -n todo-app --url
+
+# Open the URL in your browser
+```
+
+**Clean up**:
+```bash
+# Delete all resources
+./delete.sh
+
+# Or delete namespace
+kubectl delete namespace todo-app
+```
+
+### Option 2: Run with Docker Compose
 
 ```bash
 
@@ -217,6 +250,33 @@ cd src && python3 consumer.py
 cd src && python3 app.py
 
 # Open browser: http://localhost:5000
+```
+
+## Kubernetes Deployment Details
+
+### Kubernetes Resources
+
+The `k8s/` directory contains the following manifests:
+
+| File | Description |
+|------|-------------|
+| `namespace.yaml` | Creates the `todo-app` namespace |
+| `configmap.yaml` | ConfigMap for environment variables and Secrets |
+| `postgres.yaml` | PostgreSQL StatefulSet with PVC for data persistence |
+| `rabbitmq.yaml` | RabbitMQ Deployment and Service |
+| `app.yaml` | Flask app Deployment and NodePort Service |
+| `consumer.yaml` | Consumer Deployment |
+| `deploy.sh` | Automated deployment script |
+| `delete.sh` | Cleanup script |
+
+### Kubernetes Architecture
+
+```
+Namespace: todo-app
+├── postgres (StatefulSet + Service + PVC)
+├── rabbitmq (Deployment + Service)
+├── todo-app (Deployment + NodePort Service) - 2 replicas
+└── todo-consumer (Deployment) - 1 replica
 ```
 
 ### Environment Variables

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-config
+  namespace: todo-app
+data:
+  DB_HOST: postgres-service
+  DB_PORT: "5432"
+  DB_NAME: tododb
+  DB_USER: postgres
+  RABBITMQ_HOST: rabbitmq-service
+  RABBITMQ_PORT: "5672"
+  RABBITMQ_USER: guest
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: todo-secrets
+  namespace: todo-app
+type: Opaque
+stringData:
+  DB_PASSWORD: postgres
+  RABBITMQ_PASSWORD: guest
