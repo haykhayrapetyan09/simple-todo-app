@@ -12,6 +12,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY src/app.py .
+COPY src/consumer.py .
 COPY src/index.html .
 
 # Expose port
